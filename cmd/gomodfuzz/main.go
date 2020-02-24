@@ -52,7 +52,9 @@ const (
 )
 
 func main() {
-	err := handler_cobra.NewHandler(&Handler{}).Execute()
+	err := handler_cobra.NewHandler(&Handler{
+		Session: &handler.DefaultSession{},
+	}).Execute()
 	if err != nil {
 		panic(errors.WithStack(err))
 	}
@@ -60,7 +62,7 @@ func main() {
 
 // Handler defines the sub-command flags and logic.
 type Handler struct {
-	handler.IO
+	handler.Session
 
 	Timeout uint `usage:"Number of seconds to allow the command to run in each scenario"`
 	Stdout  bool `usage:"Display standard output from scenarios that fail"`
@@ -117,8 +119,8 @@ func (h *Handler) BindFlags(cmd *cobra.Command) []string {
 // Run performs the sub-command logic.
 //
 // It implements cli/handler/cobra.Handler.
-func (h *Handler) Run(ctx context.Context, args []string) {
-	if len(args) == 0 {
+func (h *Handler) Run(ctx context.Context, input handler.Input) {
+	if len(input.Args) == 0 {
 		h.log.Exitf(1, "command not specified (example: %s)", h.example[0])
 	}
 
@@ -138,7 +140,7 @@ func (h *Handler) Run(ctx context.Context, args []string) {
 		cmdCtx, cmdCancel := context.WithTimeout(ctx, time.Duration(h.Timeout)*time.Second)
 		defer cmdCancel()
 
-		r, err := s.Run(cmdCtx, args)
+		r, err := s.Run(cmdCtx, input.Args)
 		if err != nil {
 			h.log.ExitOnErr(1, errors.Wrapf(err, "failed to run scenario [%s]", s))
 		}

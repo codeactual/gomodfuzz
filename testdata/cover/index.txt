@@ -93,4 +93,4 @@ github.com/codeactual/gomodfuzz/internal/gomodfuzz/scenario.go		Run			88.0%
 github.com/codeactual/gomodfuzz/internal/gomodfuzz/scenario.go		String			100.0%
 github.com/codeactual/gomodfuzz/internal/gomodfuzz/scenario.go		UsableGopath		100.0%
 github.com/codeactual/gomodfuzz/internal/gomodfuzz/scenario.go		Wd			75.0%
-71.2%
+68.7%
